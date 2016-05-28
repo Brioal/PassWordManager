@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="A:\Android\AndroidStudioProjects\PassWordManager\material-sheet-fab\src\main\jniLibs"/></dataSet><dataSet config="release"><source path="A:\Android\AndroidStudioProjects\PassWordManager\material-sheet-fab\src\release\jniLibs"/></dataSet></merger>

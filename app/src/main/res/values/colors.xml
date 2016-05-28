@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#1b71e2</color>
+    <color name="colorPrimaryDark">#1b71e2</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorWhite">#ffffff</color>
+
+    <color name="background_card">#fff</color>
+    <color name="background_snackbar">#323232</color>
+
+    <color name="text_black_87">#de000000</color>
+    <color name="text_white_87">#deFFFFFF</color>
+    <color name="colorTrans">#00000000</color>
+    <!--字体颜色-->
+    <color name="color_blank">#32787878</color>
+    <color name="colorBlank">#000000</color>
+    <array name="note_neutral_colors">
+        <item>#9E9E9E</item>
+        <item>#455A64</item>
+        <item>#607D8B</item>
+    </array>
+
+</resources>

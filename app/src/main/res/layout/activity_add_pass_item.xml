@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/add_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="false"
+    tools:context=".activity.MainActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/add_toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:titleTextColor="@color/colorWhite"
+        app:theme="@style/MyToolBarStyle" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="60dp"
+                    android:layout_height="60dp">
+
+                    <com.brioal.passwordmanager.view.CircleImageView
+                        android:id="@+id/add_head"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:clickable="true"
+                        android:src="@mipmap/ic_logo"
+                        android:visibility="gone" />
+
+                    <com.brioal.passwordmanager.view.CircleHead
+                        android:id="@+id/add_image"
+                        android:clickable="true"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:scaleType="centerInside"
+                        android:src="@mipmap/ic_logo" />
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:text="点击选择图标，默认为标题首字"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/corner_bg"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <android.support.design.widget.TextInputLayout style="@style/add_pass_editlayout">
+
+                    <EditText
+                        android:id="@+id/add_title"
+                        style="@style/add_pass_et"
+                        android:hint="@string/tip_add_title"
+                        android:imeOptions="actionNext"
+                        android:inputType="text" />
+                </android.support.design.widget.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:text="选择分类 :"
+                        android:textColor="@color/colorBlank"
+                        android:textSize="16sp" />
+
+                    <Spinner
+                        android:id="@+id/add_classify"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginLeft="10dp"
+                        android:clickable="true"
+                        android:gravity="center_vertical|right">
+
+                    </Spinner>
+
+                </LinearLayout>
+
+                <android.support.design.widget.TextInputLayout style="@style/add_pass_editlayout">
+
+                    <EditText
+                        android:id="@+id/add_account"
+                        style="@style/add_pass_et"
+                        android:hint="@string/tip_add_account"
+                        android:imeOptions="actionNext"
+                        android:inputType="text" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout style="@style/add_pass_editlayout">
+
+                    <EditText
+                        android:id="@+id/add_pass"
+                        style="@style/add_pass_et"
+                        android:hint="@string/tip_add_pass"
+                        android:imeOptions="actionNext"
+                        android:inputType="textVisiblePassword" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout style="@style/add_pass_editlayout">
+
+                    <EditText
+                        android:id="@+id/add_desc"
+                        style="@style/add_pass_et"
+                        android:hint="@string/tip_add_desc"
+                        android:imeOptions="actionNext"
+                        android:inputType="text" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/add_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/add_btn_bg"
+                    android:text="@string/add_btn_cancel"
+                    android:textColor="@drawable/add_btn_text" />
+
+                <Button
+                    android:id="@+id/add_save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/add_btn_bg"
+                    android:text="@string/add_btn_save"
+                    android:textColor="@drawable/add_btn_text" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

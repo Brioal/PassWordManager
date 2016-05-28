@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_choose_head_image"
+    android:layout_width="70dp"
+    android:layout_height="70dp"
+    android:layout_gravity="center"
+    android:layout_margin="4dp"
+    android:scaleType="centerInside"
+    android:src="@mipmap/ic_logo">
+
+</ImageView>

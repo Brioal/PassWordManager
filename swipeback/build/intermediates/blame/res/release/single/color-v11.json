@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "C:\\Android\\AndroidStudioProjects\\PassWordManager\\swipeback\\build\\intermediates\\res\\merged\\release\\color-v11\\abc_background_cache_hint_selector_material_dark.xml",
+        "source": "C:\\Android\\AndroidStudioProjects\\PassWordManager\\swipeback\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\color-v11\\abc_background_cache_hint_selector_material_dark.xml"
+    },
+    {
+        "merged": "A:\\Android\\AndroidStudioProjects\\PassWordManager\\swipeback\\build\\intermediates\\res\\merged\\release\\color-v11\\abc_background_cache_hint_selector_material_light.xml",
+        "source": "A:\\Android\\AndroidStudioProjects\\PassWordManager\\swipeback\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\color-v11\\abc_background_cache_hint_selector_material_light.xml"
+    },
+    {
+        "merged": "C:\\Android\\AndroidStudioProjects\\PassWordManager\\swipeback\\build\\intermediates\\res\\merged\\release\\color-v11\\abc_background_cache_hint_selector_material_light.xml",
+        "source": "C:\\Android\\AndroidStudioProjects\\PassWordManager\\swipeback\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\color-v11\\abc_background_cache_hint_selector_material_light.xml"
+    },
+    {
+        "merged": "A:\\Android\\AndroidStudioProjects\\PassWordManager\\swipeback\\build\\intermediates\\res\\merged\\release\\color-v11\\abc_background_cache_hint_selector_material_dark.xml",
+        "source": "A:\\Android\\AndroidStudioProjects\\PassWordManager\\swipeback\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\color-v11\\abc_background_cache_hint_selector_material_dark.xml"
+    }
+]

@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "A:\\Android\\AndroidStudioProjects\\PassWordManager\\swipeback\\build\\intermediates\\res\\merged\\androidTest\\debug\\color-v23\\abc_color_highlight_material.xml",
+        "source": "A:\\Android\\AndroidStudioProjects\\PassWordManager\\swipeback\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\color-v23\\abc_color_highlight_material.xml"
+    },
+    {
+        "merged": "C:\\Android\\AndroidStudioProjects\\PassWordManager\\swipeback\\build\\intermediates\\res\\merged\\androidTest\\debug\\color-v23\\abc_color_highlight_material.xml",
+        "source": "C:\\Android\\AndroidStudioProjects\\PassWordManager\\swipeback\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\color-v23\\abc_color_highlight_material.xml"
+    }
+]
