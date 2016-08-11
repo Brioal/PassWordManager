@@ -2,7 +2,6 @@ package com.brioal.passwordmanager.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,8 +19,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.brioal.passwordmanager.R;
-import com.brioal.passwordmanager.model.HeadItem;
-import com.brioal.passwordmanager.util.Constan;
+import com.brioal.passwordmanager.entity.HeadItem;
+import com.brioal.passwordmanager.util.Constans;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,8 +74,8 @@ public class HeadChooseActivity extends AppCompatActivity {
         }
         mHeads = new ArrayList<>();
         HeadItem item = null;
-        for (int i = 0; i < Constan.mImages.length; i++) {
-            item = new HeadItem(Constan.mImages[i], i);
+        for (int i = 0; i < Constans.getDataLoader(mContext).getHeads().length; i++) {
+            item = new HeadItem(Constans.getDataLoader(mContext).getHeads()[i], i);
             mHeads.add(item);
         }
         mHandler.sendEmptyMessage(0);
@@ -86,12 +85,9 @@ public class HeadChooseActivity extends AppCompatActivity {
         mToolbar.setTitle("选择图标");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        SharedPreferences mPreferences = getSharedPreferences("PassWordManager", Context.MODE_APPEND);
-        int mThemeIndex = mPreferences.getInt("ThemeIndex", 0);
-        int themeColor = Constan.getThemeColor(mThemeIndex, mContext);
-        mToolbar.setBackgroundColor(themeColor);
+        mToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         mToolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
-        StatusBarUtils.setColor(this, themeColor);
+        StatusBarUtils.setColor(this, getResources().getColor(R.color.colorPrimary));
     }
 
     @Override

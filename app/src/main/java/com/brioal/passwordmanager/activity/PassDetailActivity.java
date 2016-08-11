@@ -3,7 +3,6 @@ package com.brioal.passwordmanager.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -18,10 +17,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.brioal.passwordmanager.R;
-import com.brioal.passwordmanager.model.Classify;
-import com.brioal.passwordmanager.model.PassItem;
-import com.brioal.passwordmanager.util.Constan;
-import com.brioal.passwordmanager.util.DataBaseHelper;
+import com.brioal.passwordmanager.entity.ClassifyEntity;
+import com.brioal.passwordmanager.entity.PassEntity;
+import com.brioal.passwordmanager.util.DBHelper;
 
 import java.util.ArrayList;
 
@@ -53,8 +51,8 @@ public class PassDetailActivity extends SwipeBackActivity {
     NestedScrollView mContainer;
 
 
-    private PassItem mItem;
-    private ArrayList<Classify> mClassify;
+    private PassEntity mItem;
+    private ArrayList<ClassifyEntity> mClassifyEntity;
     private Context mContext;
     private AlertDialog.Builder mBuild;
     private AlertDialog mDialog;
@@ -72,8 +70,8 @@ public class PassDetailActivity extends SwipeBackActivity {
 
 
     private void initData() {
-        mItem = (PassItem) getIntent().getSerializableExtra("Pass");
-        mClassify = (ArrayList<Classify>) getIntent().getSerializableExtra("Classify");
+        mItem = (PassEntity) getIntent().getSerializableExtra("Pass");
+        mClassifyEntity = (ArrayList<ClassifyEntity>) getIntent().getSerializableExtra("ClassifyEntity");
     }
 
     private void initView() {
@@ -93,47 +91,44 @@ public class PassDetailActivity extends SwipeBackActivity {
                 finish();
             }
         });
-        toolbar.setTitle(mItem.getmTitle());
+        toolbar.setTitle(mItem.getTitle());
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbarLayout.setTitle(mItem.getmTitle());
-        passDetailAccount.setText(mItem.getmAccount());
-        passDetailPass.setText(mItem.getmPass());
-        passDetailDesc.setText(mItem.getmDesc());
-        passDetailClassify.setText(mItem.getmClassify());
+        toolbarLayout.setTitle(mItem.getTitle());
+        passDetailAccount.setText(mItem.getAccount());
+        passDetailPass.setText(mItem.getPass());
+        passDetailDesc.setText(mItem.getDesc());
+        passDetailClassify.setText(mItem.getClassify());
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PassDetailActivity.this, AddPassItemActivity.class);
                 intent.putExtra("Pass", mItem);
-                intent.putExtra("Classify", mClassify);
+                intent.putExtra("ClassifyEntity", mClassifyEntity);
                 startActivityForResult(intent, EDIT);
             }
         });
     }
 
     public void setTheme() {
-        SharedPreferences preferences = getSharedPreferences("PassWordManager", Context.MODE_APPEND);
-        int mThemeIndex = preferences.getInt("ThemeIndex", 0);
-        int themeColor = Constan.getThemeColor(mThemeIndex, mContext);
-        mFab.setBackgroundColor(themeColor);
+        mFab.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         toolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
-        StatusBarUtils.setColor(this, themeColor);
+        StatusBarUtils.setColor(this, getResources().getColor(R.color.colorPrimary));
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == EDIT && resultCode == AddPassItemActivity.EDIT_ITEM) {
-            mItem = (PassItem) data.getSerializableExtra("Item");
-            toolbar.setTitle(mItem.getmTitle());
-            toolbarLayout.setTitle(mItem.getmTitle());
+            mItem = (PassEntity) data.getSerializableExtra("Item");
+            toolbar.setTitle(mItem.getTitle());
+            toolbarLayout.setTitle(mItem.getTitle());
             setSupportActionBar(toolbar);
-            passDetailAccount.setText(mItem.getmAccount());
-            passDetailPass.setText(mItem.getmPass());
-            passDetailDesc.setText(mItem.getmDesc());
-            passDetailClassify.setText(mItem.getmClassify());
+            passDetailAccount.setText(mItem.getAccount());
+            passDetailPass.setText(mItem.getPass());
+            passDetailDesc.setText(mItem.getDesc());
+            passDetailClassify.setText(mItem.getClassify());
             Intent intent = new Intent();
             intent.putExtra("Item", mItem);
             saveData();
@@ -142,7 +137,7 @@ public class PassDetailActivity extends SwipeBackActivity {
     }
 
     private void saveData() {
-        DataBaseHelper mHelper = new DataBaseHelper(this, "Pass.db3", null, 1);
+        DBHelper mHelper = new DBHelper(this, "Pass.db3", null, 1);
         SQLiteDatabase db = mHelper.getReadableDatabase();
         //更新数据
     }

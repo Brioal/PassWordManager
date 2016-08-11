@@ -3,7 +3,6 @@ package com.brioal.passwordmanager.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -28,8 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.brioal.passwordmanager.R;
-import com.brioal.passwordmanager.model.Classify;
-import com.brioal.passwordmanager.util.Constan;
+import com.brioal.passwordmanager.entity.ClassifyEntity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,8 +52,8 @@ public class ClassifyManagerActivity extends AppCompatActivity {
     @Bind(R.id.classify_container)
     CoordinatorLayout mContainer;
 
-    private ArrayList<Classify> mList;
-    private ArrayList<Classify> mCopy;
+    private ArrayList<ClassifyEntity> mList;
+    private ArrayList<ClassifyEntity> mCopy;
     private ClassifyAdapter mAdapter;
     private Context mContext;
     private ItemTouchHelper mHellper;
@@ -106,7 +104,7 @@ public class ClassifyManagerActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String classify = et.getText().toString();
                         if (!classify.isEmpty()) {
-                            mList.add(new Classify(classify, 0));
+                            mList.add(new ClassifyEntity( 0,classify));
                         } else {
                             et.setError("清输入内容");
                         }
@@ -124,15 +122,12 @@ public class ClassifyManagerActivity extends AppCompatActivity {
     }
 
     public void setTheme() {
-        SharedPreferences mPreferences = getSharedPreferences("PassWordManager", Context.MODE_APPEND); //读取颜色配置
-        int mThemeIndex = mPreferences.getInt("ThemeIndex", 0);
-        int themeColor = Constan.getThemeColor(mThemeIndex, mContext); //获取保存的颜色
-        mToolBar.setBackgroundColor(themeColor); // 标题栏设置颜色
+        mToolBar.setBackgroundColor(getResources().getColor(R.color.colorPrimary)); // 标题栏设置颜色
         mToolBar.setTitle("分类管理");
         setSupportActionBar(mToolBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        StatusBarUtils.setColor(this, themeColor); // 状态栏设置颜色
-        mFab.setBackgroundColor(themeColor); // fab设置颜色
+        StatusBarUtils.setColor(this, getResources().getColor(R.color.colorPrimary)); // 状态栏设置颜色
+        mFab.setBackgroundColor(getResources().getColor(R.color.colorPrimary)); // fab设置颜色
     }
 
     private void initView() {
@@ -150,7 +145,7 @@ public class ClassifyManagerActivity extends AppCompatActivity {
     }
 
     private void intiData() {
-        mList = (ArrayList<Classify>) getIntent().getSerializableExtra("Classify");
+        mList = (ArrayList<ClassifyEntity>) getIntent().getSerializableExtra("ClassifyEntity");
         mCopy = new ArrayList<>();
         for (int i = 0; i < mList.size(); i++) {
             mCopy.add(mList.get(i));
@@ -198,7 +193,7 @@ public class ClassifyManagerActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Intent intent = new Intent();
-                    intent.putExtra("Classify", mCopy);
+                    intent.putExtra("ClassifyEntity", mCopy);
                     setResult(EDIT_CLASSIFY, intent);
                     finish();
                 }
@@ -209,7 +204,7 @@ public class ClassifyManagerActivity extends AppCompatActivity {
 
     public void setResult() {
         Intent intent = new Intent();
-        intent.putExtra("Classify", mList);
+        intent.putExtra("ClassifyEntity", mList);
         setResult(EDIT_CLASSIFY, intent);
         finish();
     }
@@ -223,7 +218,7 @@ public class ClassifyManagerActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final ClassifyHolder holder, int position) {
-            Classify item = mList.get(position + 1);
+            ClassifyEntity item = mList.get(position + 1);
             holder.mText.setText(item.getmText());
             holder.mFlag.setOnTouchListener(new View.OnTouchListener() {
                 @Override

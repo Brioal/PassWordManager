@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PassWordManager.iml" filepath="$PROJECT_DIR$/PassWordManager.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/brioallib/brioallib.iml" filepath="$PROJECT_DIR$/brioallib/brioallib.iml" />
       <module fileurl="file://$PROJECT_DIR$/folding-cell/folding-cell.iml" filepath="$PROJECT_DIR$/folding-cell/folding-cell.iml" />
       <module fileurl="file://$PROJECT_DIR$/material-sheet-fab/material-sheet-fab.iml" filepath="$PROJECT_DIR$/material-sheet-fab/material-sheet-fab.iml" />
       <module fileurl="file://$PROJECT_DIR$/swipeback/swipeback.iml" filepath="$PROJECT_DIR$/swipeback/swipeback.iml" />

@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.brioal.passwordmanager.R;
-import com.brioal.passwordmanager.util.Constan;
+import com.brioal.passwordmanager.util.Constans;
 import com.brioal.passwordmanager.util.ImageReader;
 import com.brioal.passwordmanager.view.lockview.LockView;
 
@@ -26,7 +26,6 @@ import java.util.TimerTask;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.bmob.v3.Bmob;
 
 
 public class LauncherActivity extends AppCompatActivity {
@@ -59,7 +58,6 @@ public class LauncherActivity extends AppCompatActivity {
             super.handleMessage(msg);
             if (msg.what == 0) {
                 mMsg.setText("已解锁,请重新输入");
-
             } else {
                 int seonds = msg.what;
                 int minute = seonds / 60; // 获取分钟数
@@ -75,7 +73,6 @@ public class LauncherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_launcher);
         mContent = this;
         ButterKnife.bind(this);
-        Bmob.initialize(mContent, Constan.APPID);
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); // 设置全屏
         init();
@@ -84,11 +81,10 @@ public class LauncherActivity extends AppCompatActivity {
 
     private void init() {
         mBack.setImageBitmap(ImageReader.readBitmap(mContent, R.drawable.launcher_back));
-        preferences = mContent.getSharedPreferences(Constan.SHAREPREFEREMCE_KEY, Context.MODE_PRIVATE);
+        preferences = mContent.getSharedPreferences(Constans.SHAREPREFEREMCE_KEY, Context.MODE_PRIVATE);
         editor = preferences.edit();
-        isFirst = preferences.getBoolean(Constan.SHAREPREFEREMCE_KEY_ISFIRST, true); //获取是否是第一次进入
-        mPassWord = preferences.getString(Constan.SHAREPREFERENCE_KEY_PASSWORD, "0");//获取本地存储的密码
-
+        isFirst = preferences.getBoolean(Constans.SHAREPREFEREMCE_KEY_ISFIRST, true); //获取是否是第一次进入
+        mPassWord = preferences.getString(Constans.SHAREPREFERENCE_KEY_PASSWORD, "0");//获取本地存储的密码
         if (mPassWord.equals("0")) { // 未保存密码
             isHavePassWord = false;
             mMsg.setText("首次使用,请设置手势密码(不少于4位)");
@@ -113,7 +109,7 @@ public class LauncherActivity extends AppCompatActivity {
                         if (PassWord.equals(mPassWordTemp)) {
                             //设置密码成功
                             mPassWord = PassWord;
-                            editor.putString(Constan.SHAREPREFERENCE_KEY_PASSWORD, PassWord);
+                            editor.putString(Constans.SHAREPREFERENCE_KEY_PASSWORD, PassWord);
                             editor.apply();
                             mMsg.setText("密码设置成功");
                             startMainActivity();
@@ -134,7 +130,7 @@ public class LauncherActivity extends AppCompatActivity {
                         startMainActivity();
                     } else {
                         mMax_error++;
-                        if (mMax_error == Constan.LAUNCHER_MAX_ERROR_TIMES) { //失败次数达到上限
+                        if (mMax_error == Constans.LAUNCHER_MAX_ERROR_TIMES) { //失败次数达到上限
                             mLockView.setCanUnlock(false);
                             mLockView.resetDefault();
                             TimerTask timerTask = new TimerTask() {
@@ -155,7 +151,7 @@ public class LauncherActivity extends AppCompatActivity {
                         }
 
                         if (mMax_error >= 2) {
-                            mMsg.setText("密码错误,请重试," + (Constan.LAUNCHER_MAX_ERROR_TIMES - mMax_error) + "次后锁定5分钟");
+                            mMsg.setText("密码错误,请重试," + (Constans.LAUNCHER_MAX_ERROR_TIMES - mMax_error) + "次后锁定5分钟");
                         } else {
                             mMsg.setText("密码错误,请重试");
                         }
@@ -249,9 +245,8 @@ public class LauncherActivity extends AppCompatActivity {
             public void onAnimationEnd(Animation animation) {
                 if (isFirst) { // 第一次进入 ,进入引导页
                     mLockLayout.setVisibility(View.VISIBLE);
-//                    startActivity(new Intent(mContent, GuideActivity.class));
                 }
-                editor.putBoolean(Constan.SHAREPREFEREMCE_KEY_ISFIRST, false);
+                editor.putBoolean(Constans.SHAREPREFEREMCE_KEY_ISFIRST, false);
                 editor.apply(); // 存储为不是第一次进入
             }
 

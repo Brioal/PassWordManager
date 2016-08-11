@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,10 +19,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -35,13 +30,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.brioal.passwordmanager.R;
-import com.brioal.passwordmanager.model.Classify;
-import com.brioal.passwordmanager.model.PassItem;
-import com.brioal.passwordmanager.util.Constan;
-import com.brioal.passwordmanager.util.DataBaseHelper;
-import com.brioal.passwordmanager.util.NetWorkUtil;
+import com.brioal.passwordmanager.entity.ClassifyEntity;
+import com.brioal.passwordmanager.entity.PassEntity;
+import com.brioal.passwordmanager.util.Constans;
+import com.brioal.passwordmanager.util.DBHelper;
 import com.brioal.passwordmanager.view.CircleHead;
-import com.brioal.passwordmanager.view.CircleImageView;
 import com.brioal.passwordmanager.view.ClassifyListView;
 import com.brioal.passwordmanager.view.Fab;
 import com.gordonwong.materialsheetfab.DimOverlayFrameLayout;
@@ -56,9 +49,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.bmob.v3.Bmob;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.listener.FindListener;
 import me.imid.swipebacklayout.lib.StatusBarUtils;
 
 public class MainActivity extends AppCompatActivity
@@ -72,12 +62,6 @@ public class MainActivity extends AppCompatActivity
     private static final int NOTIFIED_CLASSIFY = 5;
     private static final int NOTIDIED_PASS = 6;
     private static final int MANAGER_CLASSIFY = 7;
-    @Bind(R.id.menu_image)
-    CircleImageView menuImage; //显示头像
-    @Bind(R.id.menu_user)
-    TextView menuUser; //显示用户名
-    @Bind(R.id.menu_email)
-    TextView menuEmail;  //显示email
     @Bind(R.id.menu_add)
     ImageButton menuAdd; //添加分类按钮
     @Bind(R.id.menu_listView)
@@ -100,12 +84,6 @@ public class MainActivity extends AppCompatActivity
     DrawerLayout mDrawer;
     @Bind(R.id.menu_head_layout)
     LinearLayout mHeadLayout; //头像背景
-    @Bind(R.id.menu_theme)
-    LinearLayout menuTheme;
-    @Bind(R.id.menu_setting)
-    LinearLayout menuSetting;
-    @Bind(R.id.menu_about)
-    LinearLayout menuAbout;
     @Bind(R.id.main_container)
     CoordinatorLayout mMainContainer;
 
@@ -119,25 +97,20 @@ public class MainActivity extends AppCompatActivity
     long mPressTime = 0;
 
 
-    private List<PassItem> mAllPass; //密码信息
-    private List<PassItem> mCurrentPass; //密码信息
+    private List<PassEntity> mAllPass; //密码信息
+    private List<PassEntity> mCurrentPass; //密码信息
 
-    private ArrayList<Classify> mClassifies; //分类信息
+    private ArrayList<ClassifyEntity> mClassifies; //分类信息
     private PassItemAdapter mPassAdapter;
     private MyBaseAdapter mClassifyAdapter;
-    private DataBaseHelper mHelper;
+    private DBHelper mHelper;
     //item的资源图片
     private int[] mImages = new int[]{
-            R.mipmap.ic_video,
-            R.mipmap.ic_mic,
-            R.mipmap.ic_pic,
             R.mipmap.ic_text,
     };
     //item的文字
     private int[] mNames = new int[]{
-            R.string.item_classify,
-            R.string.item_mic,
-            R.string.item_photo,
+
             R.string.item_creat
     };
     private Handler mHandler = new Handler() {
@@ -183,8 +156,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mContext = this;
-        mHelper = new DataBaseHelper(mContext, "Pass.db3", null, 1);
-        Bmob.initialize(mContext, Constan.APPID);
+        mHelper = new DBHelper(mContext, "Pass.db3", null, 1);
         new Thread(mRunnable).start();
         initView();
     }
@@ -220,87 +192,22 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void setTheme() {
-        mPreferences = getSharedPreferences("PassWordManager", Context.MODE_APPEND); //读取颜色配置
-        int mThemeIndex = mPreferences.getInt("ThemeIndex", 0);
-        int themeColor = Constan.getThemeColor(mThemeIndex, mContext); //获取保存的颜色
-        mToolBar.setBackgroundColor(themeColor); // 标题栏设置颜色
-        mHeadLayout.setBackgroundColor(themeColor); //抽屉菜单设置颜色
-        StatusBarUtils.setColor(this, themeColor); // 状态栏设置颜色
-        mFab.setColor(themeColor); // fab设置颜色
+        mToolBar.setBackgroundColor(getResources().getColor(R.color.colorPrimary)); // 标题栏设置颜色
+        mHeadLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //抽屉菜单设置颜色
+        StatusBarUtils.setColor(this, getResources().getColor(R.color.colorPrimary)); // 状态栏设置颜色
+        mFab.setColor(getResources().getColor(R.color.colorPrimary)); // fab设置颜色
     }
 
     private void initActions() {
-        menuTheme.setOnClickListener(this);
-        menuSetting.setOnClickListener(this);
-        menuAbout.setOnClickListener(this);
         menuAdd.setOnClickListener(this);
     }
 
     //从网络或者本地获取到所有的数据
     private void initData() {
         readLocalData();
-        if (NetWorkUtil.isNetworkConnected(mContext)) {
-            getClassifyFromServer();
-            getPassFromServer();
-        }
     }
 
-    public void getClassifyFromServer() {
-        BmobQuery<Classify> queryClassify = new BmobQuery<>();
-        queryClassify.setLimit(50);
-        queryClassify.addWhereEqualTo("mUser", "Brioal");
-        queryClassify.findObjects(mContext, new FindListener<Classify>() {
-            @Override
-            public void onSuccess(List<Classify> list) {
-                Log.i(TAG, "onSuccess: 成功查询到" + list.size() + "条分类记录"); //添加新数据
-                for (int i = 0; i < list.size(); i++) {
-                    if (!mClassifies.contains(list.get(i))) {
-                        mClassifies.add(list.get(i));
-                    }
-                }
-                saveClassify();
-                mHandler.sendEmptyMessage(NOTIFIED_CLASSIFY);
-            }
 
-            @Override
-            public void onError(int i, String s) {
-                Log.i(TAG, "onError: 查询分类失败");
-            }
-        });
-    }
-
-    //读取网络数据 添加逻辑选择显示哪些
-    private void getPassFromServer() {
-        BmobQuery<PassItem> queryPass = new BmobQuery<>();
-        queryPass.setLimit(1000);
-        queryPass.addWhereEqualTo("mUser", "Brioal"); //获取当前用户的pass
-        queryPass.findObjects(mContext, new FindListener<PassItem>() {
-            @Override
-            public void onSuccess(List<PassItem> list) {
-                Log.i(TAG, "onSuccess: 成功查询到" + list.size() + "条密码记录"); //添加新数据
-                if (list.size() > 0 && mAllPass.size() > 0) {
-                    for (int i = 0; i < list.size(); i++) {
-                        Log.i(TAG, "onSuccess: " + !mAllPass.contains(list.get(i)));
-                        if (!mAllPass.contains(list.get(i))) {
-                            mAllPass.add(list.get(i));
-                        }
-                    }
-                } else {
-                    mAllPass = list;
-                }
-                initClassifyCount();
-                initCurrentPass();
-                mHandler.sendEmptyMessage(NOTIFIED_CLASSIFY);
-                mHandler.sendEmptyMessage(NOTIDIED_PASS);
-            }
-
-            @Override
-            public void onError(int i, String s) {
-                Log.i(TAG, "onError: 查询失败");
-            }
-        });
-
-    }
 
     //初始化列表项
     public void initRecyclerView() {
@@ -373,9 +280,9 @@ public class MainActivity extends AppCompatActivity
 
     private void cleanClassifyMessage() {
         for (int i = 0; i < mAllPass.size(); i++) {
-            PassItem item = mAllPass.get(i);
-            if (!mClassifies.contains(new Classify(item.getmClassify(), 0))) {
-                item.setmClassify("");
+            PassEntity item = mAllPass.get(i);
+            if (!mClassifies.contains(new ClassifyEntity(0,item.getClassify()))) {
+                item.setClassify("");
             }
         }
     }
@@ -388,7 +295,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
         for (int i = 0; i < mAllPass.size(); i++) {
-            if (mAllPass.get(i).getmClassify().equals(mClassifies.get(mCurrentIndex).getmText())) {
+            if (mAllPass.get(i).getClassify().equals(mClassifies.get(mCurrentIndex).getmText())) {
                 mCurrentPass.add(mAllPass.get(i));
             }
         }
@@ -400,7 +307,7 @@ public class MainActivity extends AppCompatActivity
             mClassifies.get(i).setmNum(0);
         }
         for (int i = 0; i < mAllPass.size(); i++) {
-            int index = mClassifies.indexOf(new Classify(mAllPass.get(i).getmClassify(), 0));
+            int index = mClassifies.indexOf(new ClassifyEntity( 0,mAllPass.get(i).getClassify()));
             if (index != -1) {
                 int count = mClassifies.get(index).getmNum();
                 mClassifies.get(index).setmNum(count + 1);
@@ -428,85 +335,28 @@ public class MainActivity extends AppCompatActivity
 
     //读取本地文件 ,只执行一次
     public void readLocalData() {
-        SQLiteDatabase db = mHelper.getReadableDatabase();
-        mClassifies = new ArrayList<>();
-        Cursor classifyCursor = null;
-        classifyCursor = db.rawQuery("select * from Classifies", null);
-        Classify classify = null;
-        while (classifyCursor.moveToNext()) {
-            classify = new Classify(classifyCursor.getString(1), 0);
-            mClassifies.add(classify);
-        }
-        classifyCursor.close();
+        mClassifies = Constans.getDataLoader(mContext).getClassify();
         //如果大小为0 ,添加一个全部item
         if (mClassifies.size() == 0) {
-            mClassifies.add(new Classify("全部", 0));
-            mClassifies.add(new Classify("默认", 0));
+            mClassifies.add(new ClassifyEntity(0,"全部" ));
+            mClassifies.add(new ClassifyEntity(0,"默认"));
         }
-
-
-        mAllPass = new ArrayList<>();
-        mCurrentPass = new ArrayList<>();
-        Cursor passCursor = null;
-        PassItem item = null;
-        passCursor = db.rawQuery("select * from PassItems", null);
-        while (passCursor.moveToNext()) {
-            item = new PassItem(passCursor.getString(1), passCursor.getString(2), passCursor.getString(3), passCursor.getInt(4), passCursor.getString(5), passCursor.getLong(6), passCursor.getString(7), passCursor.getString(8), 1);
-            mAllPass.add(item);
-            mCurrentPass.add(item); // 默认pass为全部
-        }
-        passCursor.close();
+        mAllPass = Constans.getDataLoader(mContext).getPassWords(null);
+        mCurrentPass = Constans.getDataLoader(mContext).getPassWords(null);
         mHandler.sendEmptyMessage(INIT_SUCCESS);
     }
 
     //保存密码数据到本地
     public void savePass() {
-        SQLiteDatabase db = mHelper.getReadableDatabase();
-        db.execSQL("delete from PassItems where mId > 0");
-        for (PassItem item : mAllPass) {
-            db.execSQL("insert into PassItems values (null,?,?,?,?,?,?,?,?,?)", new Object[]{
-                    item.getObjectId(),
-                    item.getmTitle(),
-                    item.getmDesc(),
-                    item.getmHead(),
-                    item.getmClassify(),
-                    item.getmTime(),
-                    item.getmAccount(),
-                    item.getmPass(),
-                    item.getIsEncode()
-            });
-        }
-        db.close();
+        Constans.getDataLoader(mContext).savePassWordLocal(mAllPass);
     }
 
     //保存分类数据到本地
     private void saveClassify() {
-        SQLiteDatabase db = mHelper.getReadableDatabase();
-        db.execSQL("delete from Classifies where mId > 0");
-        for (Classify item : mClassifies) {
-            db.execSQL("insert into Classifies values ( null , ? )", new String[]{item.getmText()});
-        }
+       Constans.getDataLoader(mContext).saveClassifyLocal(mClassifies);
     }
 
 
-    //更新数据到服务器
-    public void updateDataToServer() {
-        //将本地新增数据保存到云
-    }
-
-    //解密
-    public PassItem decodePass(PassItem item) {
-
-
-        return null;
-    }
-
-    //加密
-    public PassItem encodePass(PassItem item) {
-
-
-        return null;
-    }
 
 
     @Override
@@ -537,45 +387,22 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case 3: //新建item
+            case 0: //新建item
                 materialSheetFab.hideSheet();
                 Intent intent = new Intent(mContext, AddPassItemActivity.class);
-                intent.putExtra("Classify", mClassifies);
+                intent.putExtra("ClassifyEntity", mClassifies);
                 startActivityForResult(intent, ADD_ITEM);
                 break;
-            case 2:
-                //// TODO: 16-4-28 新建重要事项
-                break;
-            case 1:
-                //// TODO: 16-4-28 新建照片备忘
 
-                break;
-            case 0:
-                //// TODO: 16-4-28 新建语音备忘
-                break;
             case R.id.menu_add:
 //
                 Intent i = new Intent(mContext, ClassifyManagerActivity.class);
-                i.putExtra("Classify", mClassifies);
+                i.putExtra("ClassifyEntity", mClassifies);
                 startActivityForResult(i, MANAGER_CLASSIFY);
                 break;
         }
@@ -588,7 +415,7 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == AddPassItemActivity.NEW_ITEM) { //新建
-            PassItem item = (PassItem) data.getSerializableExtra("Item");
+            PassEntity item = (PassEntity) data.getSerializableExtra("Item");
             mAllPass.add(item); //新建
             initCurrentPass();
             initClassifyCount();
@@ -596,7 +423,7 @@ public class MainActivity extends AppCompatActivity
             mHandler.sendEmptyMessage(NOTIFIED_CLASSIFY);
             mHandler.sendEmptyMessage(NOTIDIED_PASS);
         } else if (resultCode == AddPassItemActivity.EDIT_ITEM) { //编辑
-            PassItem item = (PassItem) data.getSerializableExtra("Item");
+            PassEntity item = (PassEntity) data.getSerializableExtra("Item");
             mAllPass.remove(mCurrentIndex);
             mAllPass.add(mCurrentIndex, item);
             initCurrentPass();
@@ -614,7 +441,7 @@ public class MainActivity extends AppCompatActivity
         } else if (resultCode == ClassifyManagerActivity.EDIT_CLASSIFY) {
             mClassifies.clear();
 
-            ArrayList<Classify> datas = (ArrayList<Classify>) data.getSerializableExtra("Classify");
+            ArrayList<ClassifyEntity> datas = (ArrayList<ClassifyEntity>) data.getSerializableExtra("ClassifyEntity");
             for (int i = 0; i < datas.size(); i++) {
                 mClassifies.add(datas.get(i));
             }
@@ -637,21 +464,21 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onBindViewHolder(PassItemHolder holder, final int position) {
-            final PassItem item = mCurrentPass.get(position);
-            if (item.getmHead() == -1) {
+            final PassEntity item = mCurrentPass.get(position);
+            if (item.getHead() == -1) {
                 holder.mHead.setVisibility(View.GONE);
                 holder.mCircleHead.setVisibility(View.VISIBLE);
-                holder.mCircleHead.setmText(item.getmTitle().toCharArray()[0]);
+                holder.mCircleHead.setmText(item.getTitle().toCharArray()[0]);
             } else {
                 holder.mHead.setVisibility(View.VISIBLE);
                 holder.mCircleHead.setVisibility(View.GONE);
                 //从本地获取图片序号
-                holder.mHead.setImageResource(Constan.mImages[item.getmHead()]);
+                holder.mHead.setImageResource(Constans.getDataLoader(mContext).getHeads()[item.getHead()]);
             }
-            holder.mTitle.setText(item.getmTitle());
-            holder.mDesc.setText(item.getmDesc());
-            holder.mClassify.setText(item.getmClassify());
-            setTime(item.getmTime(), holder.mTime);
+            holder.mTitle.setText(item.getTitle());
+            holder.mDesc.setText(item.getDesc());
+            holder.mClassify.setText(item.getClassify());
+            setTime(item.getTime(), holder.mTime);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -659,7 +486,7 @@ public class MainActivity extends AppCompatActivity
                     Intent intent = new Intent(mContext, PassDetailActivity.class);
                     intent.putExtra("Position", position);
                     intent.putExtra("Pass", item);
-                    intent.putExtra("Classify", mClassifies);
+                    intent.putExtra("ClassifyEntity", mClassifies);
                     startActivityForResult(intent, UPDATE_ITEM);
                 }
             });
@@ -748,7 +575,7 @@ public class MainActivity extends AppCompatActivity
             } else {
                 convertView.setBackgroundColor(getResources().getColor(R.color.colorWhite));
             }
-            Classify index = mClassifies.get(position);
+            ClassifyEntity index = mClassifies.get(position);
             holder.mText.setText(index.getmText());
             holder.mNum.setText(index.getmNum() + "");
             return convertView;

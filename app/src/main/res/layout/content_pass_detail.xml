@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/pass_detail_container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/detail_back"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".activity.AddPassItemActivity"
-    tools:showIn="@layout/activity_pass_detail">
+                                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                                            xmlns:tools="http://schemas.android.com/tools"
+                                            android:id="@+id/pass_detail_container"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:background="@color/colorPrimary"
+                                            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                                            tools:context=".activity.AddPassItemActivity"
+                                            tools:showIn="@layout/activity_pass_detail">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -33,19 +33,19 @@
 
                 <TextView
                     style="@style/pass_detail_tv_sub"
-                    android:text="账号 :" />
+                    android:text="账号 :"/>
 
                 <TextView
                     android:id="@+id/pass_detail_account"
                     style="@style/pass_detail_tv_content"
-                    android:text="账号内容" />
+                    android:text="账号内容"/>
 
                 <ImageButton
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_copy" />
+                    android:src="@drawable/ic_copy"/>
 
             </LinearLayout>
 
@@ -58,19 +58,19 @@
 
                 <TextView
                     style="@style/pass_detail_tv_sub"
-                    android:text="密码 :" />
+                    android:text="密码 :"/>
 
                 <TextView
                     android:id="@+id/pass_detail_pass"
                     style="@style/pass_detail_tv_content"
-                    android:text="密码内容" />
+                    android:text="密码内容"/>
 
                 <ImageButton
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_copy" />
+                    android:src="@drawable/ic_copy"/>
 
             </LinearLayout>
 
@@ -83,19 +83,19 @@
 
                 <TextView
                     style="@style/pass_detail_tv_sub"
-                    android:text="备注 :" />
+                    android:text="备注 :"/>
 
                 <TextView
                     android:id="@+id/pass_detail_desc"
                     style="@style/pass_detail_tv_content"
-                    android:text="备注内容" />
+                    android:text="备注内容"/>
 
                 <ImageButton
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_copy" />
+                    android:src="@drawable/ic_copy"/>
 
             </LinearLayout>
 
@@ -108,19 +108,19 @@
 
                 <TextView
                     style="@style/pass_detail_tv_sub"
-                    android:text="分类 :" />
+                    android:text="分类 :"/>
 
                 <TextView
                     android:id="@+id/pass_detail_classify"
                     style="@style/pass_detail_tv_content"
-                    android:text="所属分类" />
+                    android:text="所属分类"/>
 
                 <ImageButton
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_copy" />
+                    android:src="@drawable/ic_copy"/>
 
             </LinearLayout>
         </LinearLayout>

@@ -22,9 +22,9 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.brioal.passwordmanager.R;
-import com.brioal.passwordmanager.model.Classify;
-import com.brioal.passwordmanager.model.PassItem;
-import com.brioal.passwordmanager.util.Constan;
+import com.brioal.passwordmanager.entity.ClassifyEntity;
+import com.brioal.passwordmanager.entity.PassEntity;
+import com.brioal.passwordmanager.util.Constans;
 import com.brioal.passwordmanager.view.CircleHead;
 import com.brioal.passwordmanager.view.CircleImageView;
 
@@ -63,8 +63,8 @@ public class AddPassItemActivity extends AppCompatActivity implements View.OnCli
     private SharedPreferences mPreferences;
     private int selectIndex = -1;
     private Context mContext;
-    private PassItem mItem;
-    private ArrayList<Classify> mClassifys;
+    private PassEntity mItem;
+    private ArrayList<ClassifyEntity> mClassifyEntities;
     private String mCurrentClassify = "";
     private AlertDialog.Builder mBuild;
     private AlertDialog mDialog;
@@ -84,32 +84,32 @@ public class AddPassItemActivity extends AppCompatActivity implements View.OnCli
 
     public void initData() {
         if (getIntent().getSerializableExtra("Pass") != null) {
-            mItem = (PassItem) getIntent().getSerializableExtra("Pass");
-            mTitle.setText(mItem.getmTitle());
-            mAccount.setText(mItem.getmAccount());
-            mPass.setText(mItem.getmPass());
-            mDesc.setText(mItem.getmDesc());
-            if (mItem.getmHead() != -1) {
+            mItem = (PassEntity) getIntent().getSerializableExtra("Pass");
+            mTitle.setText(mItem.getTitle());
+            mAccount.setText(mItem.getAccount());
+            mPass.setText(mItem.getPass());
+            mDesc.setText(mItem.getDesc());
+            if (mItem.getHead() != -1) {
                 mCirclrHead.setVisibility(View.GONE);
                 mHead.setVisibility(View.VISIBLE);
-                mHead.setImageResource(Constan.mImages[mItem.getmHead()]);
+                mHead.setImageResource(Constans.getDataLoader(mContext).getHeads()[mItem.getHead()]);
                 mHead.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        chooseHead(mItem.getmHead());
+                        chooseHead(mItem.getHead());
                     }
                 });
             } else {
                 mCirclrHead.setVisibility(View.VISIBLE);
-                mCirclrHead.setmText(mItem.getmTitle().toCharArray()[0]);
+                mCirclrHead.setmText(mItem.getTitle().toCharArray()[0]);
             }
 
             isNew = false;
         } else {
-            mItem = new PassItem("", "", "", -1, "", -1, "", "", -1); //返回一个空的内容
+            mItem = new PassEntity("", "",  0, "",  "", "", -1); //返回一个空的内容
             mCirclrHead.setVisibility(View.GONE);
             mHead.setVisibility(View.VISIBLE);
-            mHead.setImageResource(Constan.mImages[0]);
+            mHead.setImageResource(Constans.getDataLoader(mContext).getHeads()[mItem.getHead()]);
             mHead.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -117,7 +117,7 @@ public class AddPassItemActivity extends AppCompatActivity implements View.OnCli
                 }
             });
         }
-        mClassifys = (ArrayList<Classify>) getIntent().getSerializableExtra("Classify");
+        mClassifyEntities = (ArrayList<ClassifyEntity>) getIntent().getSerializableExtra("ClassifyEntity");
         mSpinner.setAdapter(new ClassifyAdapter());
     }
 
@@ -127,9 +127,9 @@ public class AddPassItemActivity extends AppCompatActivity implements View.OnCli
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mSave.setOnClickListener(this);
         mCancel.setOnClickListener(this);
-        String classify = mItem.getmClassify();
-        for (int i = 0; i < mClassifys.size(); i++) {
-            if (mClassifys.get(i).getmText().equals(classify)) {
+        String classify = mItem.getClassify();
+        for (int i = 0; i < mClassifyEntities.size(); i++) {
+            if (mClassifyEntities.get(i).getmText().equals(classify)) {
                 mSpinner.setSelection(i);
                 break;
             }
@@ -153,12 +153,12 @@ public class AddPassItemActivity extends AppCompatActivity implements View.OnCli
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mCurrentClassify = mClassifys.get(position + 1).getmText();
+                mCurrentClassify = mClassifyEntities.get(position + 1).getmText();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mCurrentClassify = mItem.getmClassify();
+                mCurrentClassify = mItem.getClassify();
 
             }
         });
@@ -167,27 +167,24 @@ public class AddPassItemActivity extends AppCompatActivity implements View.OnCli
     //返回当前的数据
     private void returnData() {
         Intent intent = new Intent();
-        PassItem item = new PassItem();
-        item.setmTitle(mTitle.getText().toString());
-        item.setmAccount(mAccount.getText().toString());
-        item.setmPass(mPass.getText().toString());
-        item.setmDesc(mDesc.getText().toString());
-        item.setmTime(System.currentTimeMillis());
-        item.setmClassify(mCurrentClassify);
-        item.setmHead(selectIndex);
+        PassEntity item = new PassEntity();
+        item.setTitle(mTitle.getText().toString());
+        item.setAccount(mAccount.getText().toString());
+        item.setPass(mPass.getText().toString());
+        item.setDesc(mDesc.getText().toString());
+        item.setTime(System.currentTimeMillis());
+        item.setClassify(mCurrentClassify);
+        item.setHead(selectIndex);
         intent.putExtra("Item", item);
         setResult(isNew ? NEW_ITEM : EDIT_ITEM, intent);
         finish();
     }
 
     public void setTheme() {
-        mPreferences = getSharedPreferences("PassWordManager", Context.MODE_APPEND);
-        int mThemeIndex = mPreferences.getInt("ThemeIndex", 0);
-        int themeColor = Constan.getThemeColor(mThemeIndex, mContext);
-        mToolBar.setBackgroundColor(themeColor);
-        mToolBar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
-        mContainer.setBackgroundColor(themeColor);
-        StatusBarUtils.setColor(this, themeColor);
+        mToolBar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        mToolBar.setTitleTextColor(getResources().getColor(R.color.colorPrimary));
+        mContainer.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        StatusBarUtils.setColor(this, getResources().getColor(R.color.colorPrimary));
     }
 
     public void chooseHead(int index) {
@@ -203,7 +200,7 @@ public class AddPassItemActivity extends AppCompatActivity implements View.OnCli
             int index = data.getIntExtra("Index", -1);
             if (index != -1) {
                 selectIndex = index;
-                mHead.setImageResource(Constan.mImages[index]);
+                mHead.setImageResource(Constans.getDataLoader(mContext).getHeads()[index]);
                 mCirclrHead.setVisibility(View.GONE);
                 mHead.setVisibility(View.VISIBLE);
             }
@@ -222,7 +219,7 @@ public class AddPassItemActivity extends AppCompatActivity implements View.OnCli
 
     //判断是否存在编辑中的内容或者内容有修改并提示
     private void judgeEmpty() {
-        if (!mTitle.getText().toString().equals(mItem.getmTitle()) || !mAccount.getText().toString().equals(mItem.getmAccount()) || !mPass.getText().toString().equals(mItem.getmPass()) || !mDesc.getText().toString().equals(mItem.getmDesc())) {  //存在改动
+        if (!mTitle.getText().toString().equals(mItem.getTitle()) || !mAccount.getText().toString().equals(mItem.getAccount()) || !mPass.getText().toString().equals(mItem.getPass()) || !mDesc.getText().toString().equals(mItem.getDesc())) {  //存在改动
             if (mDialog == null) {
                 mDialog = mBuild.create();
             }
@@ -261,12 +258,12 @@ public class AddPassItemActivity extends AppCompatActivity implements View.OnCli
 
         @Override
         public int getCount() {
-            return mClassifys.size() - 1;
+            return mClassifyEntities.size() - 1;
         }
 
         @Override
         public Object getItem(int position) {
-            return mClassifys.get(position);
+            return mClassifyEntities.get(position);
         }
 
         @Override
@@ -289,9 +286,9 @@ public class AddPassItemActivity extends AppCompatActivity implements View.OnCli
             } else {
                 holder = (SpinnerViewHolder) convertView.getTag();
             }
-            Classify classify = mClassifys.get(position);
+            ClassifyEntity classifyEntity = mClassifyEntities.get(position);
             holder.itemView.setBackgroundColor(getResources().getColor(R.color.colorTrans));
-            holder.mName.setText(classify.getmText());
+            holder.mName.setText(classifyEntity.getmText());
             return convertView;
         }
 
@@ -322,8 +319,8 @@ public class AddPassItemActivity extends AppCompatActivity implements View.OnCli
             }
             holder.mName.setTextColor(getResources().getColor(R.color.colorBlank));
             holder.itemView.setBackgroundColor(getResources().getColor(R.color.colorWhite));
-            Classify classify = mClassifys.get(position + 1);
-            holder.mName.setText(classify.getmText());
+            ClassifyEntity classifyEntity = mClassifyEntities.get(position + 1);
+            holder.mName.setText(classifyEntity.getmText());
             return convertView;
         }
     }
